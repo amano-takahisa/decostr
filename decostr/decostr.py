@@ -3,10 +3,11 @@
 ESC = '\033'
 
 
-class DecoStr:
-    def __init__(self, string: str):
-        self.string = string
-        self.decostring = string
+class DecoStr(str):
+    def __new__(cls, value):
+        self = super(DecoStr, cls).__new__(cls, value)
+        self.decostring = value
+        return self
 
     def bold(self):
         self.decostring = f'{ESC}[1m{self.decostring}{ESC}[21m'
