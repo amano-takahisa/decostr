@@ -9,6 +9,12 @@ class DecoStr(str):
         self.decostring = value
         return self
 
+    def __repr__(self):
+        return self.decostring
+
+    def __str__(self):
+        return self.decostring
+
     def bold(self):
         self.decostring = f'{ESC}[1m{self.decostring}{ESC}[21m'
         return self
