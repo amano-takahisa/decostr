@@ -12,4 +12,6 @@ class Test_DecoStr:
     def test_decostr(self):
         out = DecoStr('sample text').bold().underline()
         assert out.decostring == '\x1b[4m\x1b[1msample text\x1b[21m\x1b[24m'
-        assert out.string == 'sample text'
+        assert out == 'sample text'
+        assert isinstance(out, str)
+        assert isinstance(out, DecoStr)
