@@ -70,10 +70,10 @@ class DecoStr(str):
         self = super(DecoStr, cls).__new__(cls, value)
         if isinstance(value, DecoStr):
             self.decostring = value.decostring
-            self._str = value.raw
+            self._raw = value.raw
         elif isinstance(value, str):
             self.decostring = value
-            self._str = value
+            self._raw = value
         return self
 
     def __repr__(self) -> str:
@@ -85,10 +85,10 @@ class DecoStr(str):
     def __add__(self, other: Union[str, DecoStr]) -> DecoStr:
         if isinstance(other, DecoStr):
             out = DecoStr(self.decostring + other.decostring)
-            out._str = self.raw + other.raw
+            out._raw = self.raw + other.raw
         elif isinstance(other, str):
             out = DecoStr(self.decostring + other)
-            out._str = self.raw + other
+            out._raw = self.raw + other
         else:
             raise TypeError(f'type other {type(other)} is not supported.')
         return out
@@ -96,10 +96,10 @@ class DecoStr(str):
     def __radd__(self, other: Union[str, DecoStr]) -> DecoStr:
         if isinstance(other, DecoStr):
             out = DecoStr(other.decostring + self.decostring)
-            out._str = other.decostring + self.raw
+            out._raw = other.decostring + self.raw
         elif isinstance(other, str):  # noqa: E721
             out = DecoStr(other + self.decostring)
-            out._str = other + self.raw
+            out._raw = other + self.raw
         else:
             raise TypeError(f'type other {type(other)} is not supported.')
         return out
@@ -108,63 +108,63 @@ class DecoStr(str):
         decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='bold')
         out = DecoStr(decostring)
-        out._str = self.raw
+        out._raw = self.raw
         return out
 
     def dim(self) -> DecoStr:
         decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='dim')
         out = DecoStr(decostring)
-        out._str = self.raw
+        out._raw = self.raw
         return out
 
     def italic(self) -> DecoStr:
         decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='italic')
         out = DecoStr(decostring)
-        out._str = self.raw
+        out._raw = self.raw
         return out
 
     def underline(self) -> DecoStr:
         decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='underline')
         out = DecoStr(decostring)
-        out._str = self.raw
+        out._raw = self.raw
         return out
 
     def blink(self) -> DecoStr:
         decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='blink')
         out = DecoStr(decostring)
-        out._str = self.raw
+        out._raw = self.raw
         return out
 
     def blinkrapid(self) -> DecoStr:
         decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='blinkrapid')
         out = DecoStr(decostring)
-        out._str = self.raw
+        out._raw = self.raw
         return out
 
     def invert(self) -> DecoStr:
         decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='invert')
         out = DecoStr(decostring)
-        out._str = self.raw
+        out._raw = self.raw
         return out
 
     def hide(self) -> DecoStr:
         decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='hide')
         out = DecoStr(decostring)
-        out._str = self.raw
+        out._raw = self.raw
         return out
 
     def strike(self) -> DecoStr:
         decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='strike')
         out = DecoStr(decostring)
-        out._str = self.raw
+        out._raw = self.raw
         return out
 
     def color(self,
@@ -178,13 +178,13 @@ class DecoStr(str):
             decostring = enclose_attributes(
                 string=decostring, code_dict=bgcolors, item=bgcolor)
         out = DecoStr(decostring)
-        out._str = self.raw
+        out._raw = self.raw
         return out
 
     @property
     def raw(self) -> str:
-        return self._str
+        return self._raw
 
     @raw.setter
     def raw(self, value: str) -> None:
-        self._str = value
+        self._raw = value
