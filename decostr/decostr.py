@@ -105,60 +105,81 @@ class DecoStr(str):
         return out
 
     def bold(self) -> DecoStr:
-        self.decostring = enclose_attributes(
+        decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='bold')
-        return self
+        out = DecoStr(decostring)
+        out._str = self.raw
+        return out
 
     def dim(self) -> DecoStr:
-        self.decostring = enclose_attributes(
+        decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='dim')
-        return self
+        out = DecoStr(decostring)
+        out._str = self.raw
+        return out
 
     def italic(self) -> DecoStr:
-        self.decostring = enclose_attributes(
+        decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='italic')
-        return self
+        out = DecoStr(decostring)
+        out._str = self.raw
+        return out
 
     def underline(self) -> DecoStr:
-        self.decostring = enclose_attributes(
+        decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='underline')
-        return self
+        out = DecoStr(decostring)
+        out._str = self.raw
+        return out
 
     def blink(self) -> DecoStr:
-        self.decostring = enclose_attributes(
+        decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='blink')
-        return self
+        out = DecoStr(decostring)
+        out._str = self.raw
+        return out
 
     def blinkrapid(self) -> DecoStr:
-        self.decostring = enclose_attributes(
+        decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='blinkrapid')
-        return self
+        out = DecoStr(decostring)
+        out._str = self.raw
+        return out
 
     def invert(self) -> DecoStr:
-        self.decostring = enclose_attributes(
+        decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='invert')
-        return self
+        out = DecoStr(decostring)
+        out._str = self.raw
+        return out
 
     def hide(self) -> DecoStr:
-        self.decostring = enclose_attributes(
+        decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='hide')
-        return self
+        out = DecoStr(decostring)
+        out._str = self.raw
+        return out
 
     def strike(self) -> DecoStr:
-        self.decostring = enclose_attributes(
+        decostring = enclose_attributes(
             string=self.decostring, code_dict=attributes, item='strike')
-        return self
+        out = DecoStr(decostring)
+        out._str = self.raw
+        return out
 
     def color(self,
               color: Optional[str] = None,
               bgcolor: Optional[str] = None) -> DecoStr:
+        decostring = self.decostring
         if color:
-            self.decostring = enclose_attributes(
-                string=self.decostring, code_dict=fgcolors, item=color)
+            decostring = enclose_attributes(
+                string=decostring, code_dict=fgcolors, item=color)
         if bgcolor:
-            self.decostring = enclose_attributes(
-                string=self.decostring, code_dict=bgcolors, item=bgcolor)
-        return self
+            decostring = enclose_attributes(
+                string=decostring, code_dict=bgcolors, item=bgcolor)
+        out = DecoStr(decostring)
+        out._str = self.raw
+        return out
 
     @property
     def raw(self) -> str:
