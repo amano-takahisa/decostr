@@ -26,9 +26,9 @@ class DecoStr(str):
         return self
 
     @property
-    def to_str(self) -> str:
+    def raw(self) -> str:
         return self._str
 
-    @to_str.setter
-    def to_str(self, value: str) -> None:
+    @raw.setter
+    def raw(self, value: str) -> None:
         self._str = value

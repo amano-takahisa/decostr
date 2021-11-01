@@ -16,7 +16,7 @@ class Test_DecoStr:
         assert isinstance(out, str)
         assert isinstance(out, DecoStr)
 
-    def test_to_str(self):
-        out = DecoStr('sample text').bold().underline().to_str
+    def test_raw(self):
+        out = DecoStr('sample text').bold().underline().raw
         assert out == 'sample text'
         assert type(out) == str
