@@ -20,3 +20,8 @@ class Test_DecoStr:
         out = DecoStr('sample text').bold().underline().raw
         assert out == 'sample text'
         assert type(out) == str
+
+    def test_add(self):
+        out = DecoStr('bold').bold() + ' normal'
+        assert out.raw == 'bold normal'
+        assert out.decostring == '\x1b[1mbold\x1b[21m normal'
