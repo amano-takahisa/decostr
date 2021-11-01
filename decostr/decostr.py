@@ -7,7 +7,7 @@ class DecoStr(str):
     def __new__(cls, value):
         self = super(DecoStr, cls).__new__(cls, value)
         self.decostring = value
-        self.raw = value
+        self._str = value
         return self
 
     def __repr__(self):
@@ -24,5 +24,11 @@ class DecoStr(str):
         self.decostring = f'{ESC}[4m{self.decostring}{ESC}[24m'
         return self
 
-    def raw(self):
-        return self.raw
+    @property
+    def str(self):
+        return self._str
+
+    @str.setter
+    def str(self, value):
+        self._str = value
+
