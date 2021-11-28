@@ -1,4 +1,4 @@
-* decostr version:
+* tagstr version:
 * Python version:
 * Operating System:
 

@@ -1,4 +1,4 @@
-"""Top-level package for decostr."""
+"""Top-level package for tagstr."""
 
 __author__ = """Amano Takahisa"""
 __email__ = 'amano.takahisa@gmail.com'

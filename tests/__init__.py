@@ -1,1 +1,1 @@
-"""Unit test package for decostr."""
+"""Unit test package for tagstr."""

@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use decostr in a project::
+To use tagstr in a project::
 
-    import decostr
+    import tagstr
