@@ -1,4 +1,4 @@
-Welcome to decostr's documentation!
+Welcome to tagstr's documentation!
 ======================================
 
 .. toctree::

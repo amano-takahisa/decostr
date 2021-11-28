@@ -65,119 +65,119 @@ def enclose_attributes(string: str,
     return open_tag + string + close_tag
 
 
-class DecoStr(str):
-    def __new__(cls, value: Union[str, DecoStr]) -> DecoStr:
-        self = super(DecoStr, cls).__new__(cls, value)
-        if isinstance(value, DecoStr):
-            self.decostring = value.decostring
+class TagStr(str):
+    def __new__(cls, value: Union[str, TagStr]) -> TagStr:
+        self = super(TagStr, cls).__new__(cls, value)
+        if isinstance(value, TagStr):
+            self.tagstring = value.tagstring
             self._raw = value.raw
         elif isinstance(value, str):
-            self.decostring = value
+            self.tagstring = value
             self._raw = value
         return self
 
     def __repr__(self) -> str:
-        return self.decostring
+        return self.tagstring
 
     def __str__(self) -> str:
-        return self.decostring
+        return self.tagstring
 
-    def __add__(self, other: Union[str, DecoStr]) -> DecoStr:
-        if isinstance(other, DecoStr):
-            out = DecoStr(self.decostring + other.decostring)
+    def __add__(self, other: Union[str, TagStr]) -> TagStr:
+        if isinstance(other, TagStr):
+            out = TagStr(self.tagstring + other.tagstring)
             out._raw = self.raw + other.raw
         elif isinstance(other, str):
-            out = DecoStr(self.decostring + other)
+            out = TagStr(self.tagstring + other)
             out._raw = self.raw + other
         else:
             raise TypeError(f'type other {type(other)} is not supported.')
         return out
 
-    def __radd__(self, other: Union[str, DecoStr]) -> DecoStr:
-        if isinstance(other, DecoStr):
-            out = DecoStr(other.decostring + self.decostring)
-            out._raw = other.decostring + self.raw
+    def __radd__(self, other: Union[str, TagStr]) -> TagStr:
+        if isinstance(other, TagStr):
+            out = TagStr(other.tagstring + self.tagstring)
+            out._raw = other.tagstring + self.raw
         elif isinstance(other, str):  # noqa: E721
-            out = DecoStr(other + self.decostring)
+            out = TagStr(other + self.tagstring)
             out._raw = other + self.raw
         else:
             raise TypeError(f'type other {type(other)} is not supported.')
         return out
 
-    def bold(self) -> DecoStr:
-        decostring = enclose_attributes(
-            string=self.decostring, code_dict=attributes, item='bold')
-        out = DecoStr(decostring)
+    def bold(self) -> TagStr:
+        tagstring = enclose_attributes(
+            string=self.tagstring, code_dict=attributes, item='bold')
+        out = TagStr(tagstring)
         out._raw = self.raw
         return out
 
-    def dim(self) -> DecoStr:
-        decostring = enclose_attributes(
-            string=self.decostring, code_dict=attributes, item='dim')
-        out = DecoStr(decostring)
+    def dim(self) -> TagStr:
+        tagstring = enclose_attributes(
+            string=self.tagstring, code_dict=attributes, item='dim')
+        out = TagStr(tagstring)
         out._raw = self.raw
         return out
 
-    def italic(self) -> DecoStr:
-        decostring = enclose_attributes(
-            string=self.decostring, code_dict=attributes, item='italic')
-        out = DecoStr(decostring)
+    def italic(self) -> TagStr:
+        tagstring = enclose_attributes(
+            string=self.tagstring, code_dict=attributes, item='italic')
+        out = TagStr(tagstring)
         out._raw = self.raw
         return out
 
-    def underline(self) -> DecoStr:
-        decostring = enclose_attributes(
-            string=self.decostring, code_dict=attributes, item='underline')
-        out = DecoStr(decostring)
+    def underline(self) -> TagStr:
+        tagstring = enclose_attributes(
+            string=self.tagstring, code_dict=attributes, item='underline')
+        out = TagStr(tagstring)
         out._raw = self.raw
         return out
 
-    def blink(self) -> DecoStr:
-        decostring = enclose_attributes(
-            string=self.decostring, code_dict=attributes, item='blink')
-        out = DecoStr(decostring)
+    def blink(self) -> TagStr:
+        tagstring = enclose_attributes(
+            string=self.tagstring, code_dict=attributes, item='blink')
+        out = TagStr(tagstring)
         out._raw = self.raw
         return out
 
-    def blinkrapid(self) -> DecoStr:
-        decostring = enclose_attributes(
-            string=self.decostring, code_dict=attributes, item='blinkrapid')
-        out = DecoStr(decostring)
+    def blinkrapid(self) -> TagStr:
+        tagstring = enclose_attributes(
+            string=self.tagstring, code_dict=attributes, item='blinkrapid')
+        out = TagStr(tagstring)
         out._raw = self.raw
         return out
 
-    def invert(self) -> DecoStr:
-        decostring = enclose_attributes(
-            string=self.decostring, code_dict=attributes, item='invert')
-        out = DecoStr(decostring)
+    def invert(self) -> TagStr:
+        tagstring = enclose_attributes(
+            string=self.tagstring, code_dict=attributes, item='invert')
+        out = TagStr(tagstring)
         out._raw = self.raw
         return out
 
-    def hide(self) -> DecoStr:
-        decostring = enclose_attributes(
-            string=self.decostring, code_dict=attributes, item='hide')
-        out = DecoStr(decostring)
+    def hide(self) -> TagStr:
+        tagstring = enclose_attributes(
+            string=self.tagstring, code_dict=attributes, item='hide')
+        out = TagStr(tagstring)
         out._raw = self.raw
         return out
 
-    def strike(self) -> DecoStr:
-        decostring = enclose_attributes(
-            string=self.decostring, code_dict=attributes, item='strike')
-        out = DecoStr(decostring)
+    def strike(self) -> TagStr:
+        tagstring = enclose_attributes(
+            string=self.tagstring, code_dict=attributes, item='strike')
+        out = TagStr(tagstring)
         out._raw = self.raw
         return out
 
     def color(self,
               color: Optional[str] = None,
-              bgcolor: Optional[str] = None) -> DecoStr:
-        decostring = self.decostring
+              bgcolor: Optional[str] = None) -> TagStr:
+        tagstring = self.tagstring
         if color:
-            decostring = enclose_attributes(
-                string=decostring, code_dict=fgcolors, item=color)
+            tagstring = enclose_attributes(
+                string=tagstring, code_dict=fgcolors, item=color)
         if bgcolor:
-            decostring = enclose_attributes(
-                string=decostring, code_dict=bgcolors, item=bgcolor)
-        out = DecoStr(decostring)
+            tagstring = enclose_attributes(
+                string=tagstring, code_dict=bgcolors, item=bgcolor)
+        out = TagStr(tagstring)
         out._raw = self.raw
         return out
 
