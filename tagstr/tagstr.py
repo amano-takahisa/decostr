@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import annotations
-from typing import Dict, List, Literal, Optional, Tuple, Union
+
+from typing import List, Literal, Tuple, Union
 
 ESC = '\033'
 
@@ -97,7 +98,6 @@ class TagStr:
 
     def strike(self) -> TagStr:
         return self._append_tag_to_copy(tag='strike')
-
 
     def tagged_text(self) -> str:
         if self.tagset == 'bash':
