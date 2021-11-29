@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from __future__ import annotations
-from typing import Dict, Optional, Tuple, Union
+from typing import Dict, List, Literal, Optional, Tuple, Union
 
 ESC = '\033'
 
@@ -57,134 +57,60 @@ bgcolors = {
 }
 
 
-def enclose_attributes(string: str,
-                       code_dict: Dict[str, Tuple[int, int]],
-                       item: str) -> str:
-    open_tag = f'{ESC}[{code_dict[item][0]}m'
-    close_tag = f'{ESC}[{code_dict[item][1]}m'
-    return open_tag + string + close_tag
+class TagStr:
+    def __init__(self,
+                 contents: Union[str, TagStr],
+                 tags: List[str] = [],
+                 tagset: Literal['bash'] = 'bash'):
+        self.contents = contents
+        self.tags = tags
+        self.tagset = tagset
 
-
-class TagStr(str):
-    def __new__(cls, value: Union[str, TagStr]) -> TagStr:
-        self = super(TagStr, cls).__new__(cls, value)
-        if isinstance(value, TagStr):
-            self.tagstring = value.tagstring
-            self._raw = value.raw
-        elif isinstance(value, str):
-            self.tagstring = value
-            self._raw = value
-        return self
-
-    def __repr__(self) -> str:
-        return self.tagstring
-
-    def __str__(self) -> str:
-        return self.tagstring
-
-    def __add__(self, other: Union[str, TagStr]) -> TagStr:
-        if isinstance(other, TagStr):
-            out = TagStr(self.tagstring + other.tagstring)
-            out._raw = self.raw + other.raw
-        elif isinstance(other, str):
-            out = TagStr(self.tagstring + other)
-            out._raw = self.raw + other
-        else:
-            raise TypeError(f'type other {type(other)} is not supported.')
-        return out
-
-    def __radd__(self, other: Union[str, TagStr]) -> TagStr:
-        if isinstance(other, TagStr):
-            out = TagStr(other.tagstring + self.tagstring)
-            out._raw = other.tagstring + self.raw
-        elif isinstance(other, str):  # noqa: E721
-            out = TagStr(other + self.tagstring)
-            out._raw = other + self.raw
-        else:
-            raise TypeError(f'type other {type(other)} is not supported.')
-        return out
+    def _append_tag_to_copy(self, tag: str):
+        return TagStr(contents=self.contents,
+                      tags=self.tags + [tag],
+                      tagset=self.tagset)
 
     def bold(self) -> TagStr:
-        tagstring = enclose_attributes(
-            string=self.tagstring, code_dict=attributes, item='bold')
-        out = TagStr(tagstring)
-        out._raw = self.raw
-        return out
+        return self._append_tag_to_copy(tag='bold')
 
     def dim(self) -> TagStr:
-        tagstring = enclose_attributes(
-            string=self.tagstring, code_dict=attributes, item='dim')
-        out = TagStr(tagstring)
-        out._raw = self.raw
-        return out
+        return self._append_tag_to_copy(tag='dim')
 
     def italic(self) -> TagStr:
-        tagstring = enclose_attributes(
-            string=self.tagstring, code_dict=attributes, item='italic')
-        out = TagStr(tagstring)
-        out._raw = self.raw
-        return out
+        return self._append_tag_to_copy(tag='italic')
 
     def underline(self) -> TagStr:
-        tagstring = enclose_attributes(
-            string=self.tagstring, code_dict=attributes, item='underline')
-        out = TagStr(tagstring)
-        out._raw = self.raw
-        return out
+        return self._append_tag_to_copy(tag='underline')
 
     def blink(self) -> TagStr:
-        tagstring = enclose_attributes(
-            string=self.tagstring, code_dict=attributes, item='blink')
-        out = TagStr(tagstring)
-        out._raw = self.raw
-        return out
+        return self._append_tag_to_copy(tag='blink')
 
     def blinkrapid(self) -> TagStr:
-        tagstring = enclose_attributes(
-            string=self.tagstring, code_dict=attributes, item='blinkrapid')
-        out = TagStr(tagstring)
-        out._raw = self.raw
-        return out
+        return self._append_tag_to_copy(tag='blinkrapid')
 
     def invert(self) -> TagStr:
-        tagstring = enclose_attributes(
-            string=self.tagstring, code_dict=attributes, item='invert')
-        out = TagStr(tagstring)
-        out._raw = self.raw
-        return out
+        return self._append_tag_to_copy(tag='invert')
 
     def hide(self) -> TagStr:
-        tagstring = enclose_attributes(
-            string=self.tagstring, code_dict=attributes, item='hide')
-        out = TagStr(tagstring)
-        out._raw = self.raw
-        return out
+        return self._append_tag_to_copy(tag='hide')
 
     def strike(self) -> TagStr:
-        tagstring = enclose_attributes(
-            string=self.tagstring, code_dict=attributes, item='strike')
-        out = TagStr(tagstring)
-        out._raw = self.raw
-        return out
+        return self._append_tag_to_copy(tag='strike')
 
-    def color(self,
-              color: Optional[str] = None,
-              bgcolor: Optional[str] = None) -> TagStr:
-        tagstring = self.tagstring
-        if color:
-            tagstring = enclose_attributes(
-                string=tagstring, code_dict=fgcolors, item=color)
-        if bgcolor:
-            tagstring = enclose_attributes(
-                string=tagstring, code_dict=bgcolors, item=bgcolor)
-        out = TagStr(tagstring)
-        out._raw = self.raw
-        return out
 
-    @property
-    def raw(self) -> str:
-        return self._raw
+    def tagged_text(self) -> str:
+        if self.tagset == 'bash':
+            open_tag, close_tag = generate_bash_tags(self.tags)
+        return open_tag + self.contents + close_tag
 
-    @raw.setter
-    def raw(self, value: str) -> None:
-        self._raw = value
+
+def generate_bash_tags(tags: List[str]) -> Tuple[str, str]:
+    open_tag = close_tag = ''
+    for tag in tags:
+        if tag in attributes:
+            open_tag = f'{ESC}[{attributes[tag][0]}m' + open_tag
+            close_tag = close_tag + f'{ESC}[{attributes[tag][1]}m'
+        else:
+            raise NotImplementedError(f'tag {tag} is not implemented.')
+    return open_tag, close_tag
