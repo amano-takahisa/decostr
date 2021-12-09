@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import annotations
 
-from typing import List, Literal, Tuple, Union
+from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
 ESC = '\033'
 
@@ -61,43 +61,56 @@ bgcolors = {
 class TagStr:
     def __init__(self,
                  contents: Union[str, TagStr],
-                 tags: List[str] = [],
+                 tags: Dict[str, Union[bool, str, dict]] = {},
                  tagset: Literal['bash'] = 'bash'):
         self.contents = contents
         self.tags = tags
         self.tagset = tagset
 
-    def _append_tag_to_copy(self, tag: str):
+    def _append_tag_to_copy(self,
+                            tag: Dict[str, Union[bool, str, dict]]):
+        tags = self.tags.copy()
+        tags.update(tag)
         return TagStr(contents=self.contents,
-                      tags=self.tags + [tag],
-                      tagset=self.tagset)
+                      tags=tags,
+                      tagset=self.tagset)  # type: ignore
 
-    def bold(self) -> TagStr:
-        return self._append_tag_to_copy(tag='bold')
+    def bold(self, tag: bool = True, /) -> TagStr:
+        return self._append_tag_to_copy(tag={'bold': tag})
 
-    def dim(self) -> TagStr:
-        return self._append_tag_to_copy(tag='dim')
+    def dim(self, tag: bool = True, /) -> TagStr:
+        return self._append_tag_to_copy(tag={'dim': True})
 
-    def italic(self) -> TagStr:
-        return self._append_tag_to_copy(tag='italic')
+    def italic(self, tag: bool = True, /) -> TagStr:
+        return self._append_tag_to_copy(tag={'italic': tag})
 
-    def underline(self) -> TagStr:
-        return self._append_tag_to_copy(tag='underline')
+    def underline(self, tag: bool = True, /) -> TagStr:
+        return self._append_tag_to_copy(tag={'underline': tag})
 
-    def blink(self) -> TagStr:
-        return self._append_tag_to_copy(tag='blink')
+    def blink(self, tag: bool = True, /) -> TagStr:
+        return self._append_tag_to_copy(tag={'blink': tag})
 
-    def blinkrapid(self) -> TagStr:
-        return self._append_tag_to_copy(tag='blinkrapid')
+    def blinkrapid(self, tag: bool = True, /) -> TagStr:
+        return self._append_tag_to_copy(tag={'blinkrapid': tag})
 
-    def invert(self) -> TagStr:
-        return self._append_tag_to_copy(tag='invert')
+    def invert(self, tag: bool = True, /) -> TagStr:
+        return self._append_tag_to_copy(tag={'invert': tag})
 
-    def hide(self) -> TagStr:
-        return self._append_tag_to_copy(tag='hide')
+    def hide(self, tag: bool = True, /) -> TagStr:
+        return self._append_tag_to_copy(tag={'hide': tag})
 
-    def strike(self) -> TagStr:
-        return self._append_tag_to_copy(tag='strike')
+    def strike(self, tag: bool = True, /) -> TagStr:
+        return self._append_tag_to_copy(tag={'strike': tag})
+
+    def color(self,
+              fgcolor: Optional[str] = None,
+              bgcolor: Optional[str] = None) -> TagStr:
+        color = {}
+        if fgcolor:
+            color['fgcolor'] = fgcolor
+        if bgcolor:
+            color['bgcolor'] = bgcolor
+        return self._append_tag_to_copy(tag={'color': color})
 
     def tagged_text(self) -> str:
         if self.tagset == 'bash':
@@ -105,12 +118,22 @@ class TagStr:
         return open_tag + self.contents + close_tag
 
 
-def generate_bash_tags(tags: List[str]) -> Tuple[str, str]:
+def generate_bash_tags(
+        tags: Dict[str, Union[bool, str, dict]]) -> Tuple[str, str]:
     open_tag = close_tag = ''
-    for tag in tags:
-        if tag in attributes:
-            open_tag = f'{ESC}[{attributes[tag][0]}m' + open_tag
-            close_tag = close_tag + f'{ESC}[{attributes[tag][1]}m'
+    for tag_name, tag_value in tags.items():
+        if (tag_name in attributes) and tag_value:
+            open_tag = f'{ESC}[{attributes[tag_name][0]}m' + open_tag
+            close_tag = close_tag + f'{ESC}[{attributes[tag_name][1]}m'
+        elif tag_name in ['color']:
+            for target, color in tag_value.items():  # type: ignore
+                if color:  # type: ignore
+                    if target == 'fgcolor':
+                        color_codes =fgcolors[color]
+                    if target == 'bgcolor':
+                        color_codes =bgcolors[color]
+                    open_tag = f'{ESC}[{color_codes[0]}m' + open_tag
+                    close_tag = close_tag + f'{ESC}[{color_codes[1]}m'
         else:
-            raise NotImplementedError(f'tag {tag} is not implemented.')
+            raise NotImplementedError(f'tag {tag_name} is not implemented.')
     return open_tag, close_tag
